@@ -14,9 +14,6 @@ function Dashboard() {
     {/* previous interview list */}
 
     <HistoryInterviewList/>
-
-
-
 </div>
   )
 }
