@@ -1,9 +1,7 @@
 import React from 'react'
 import Header from './dashboard_components/Header'
-import Dashboard from './Dashboard'
-import InterviewPage from '../interview/InterviewPage'
-import StartInterviewPage from '../startinterview/StartInterviewPage'
-import Feedback from '../feedback/Feedback'
+
+import { Outlet } from 'react-router-dom'
 
 function Dashboard_Layout() {
   return (
@@ -11,7 +9,8 @@ function Dashboard_Layout() {
       <Header/>
       <div className='mx-5 md:mx-20 lg:mx-36 '>
         {/* {children} */}
-        <Dashboard/>
+        {/* <Dashboard/> */}
+        <Outlet/>
         {/* <InterviewPage/>
         <StartInterviewPage/>
         <Feedback interviewId='12345'/> */}
