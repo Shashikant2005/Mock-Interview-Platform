@@ -16,12 +16,13 @@ const userRoutes = require("./routes/userRoutes");
 const decreaseinterviewcount = require('./routes/decreaseInterviewCountRoute');
 const getinterviewcount = require("./routes/getInterviewCountRoute")
 const cors = require("cors");
+require("dotenv").config();
 const { dbConnect } = require("./config/db");
 const decreaseInterviewCount  = require("./controlers/decreaseInterviewCount ");
 
 app.use(cors({ origin: "http://localhost:5173" }));
 
-
+const port = process.env.PORT || 3000;
 app.use(express.json());
 // connect Db
  dbConnect();
@@ -54,6 +55,6 @@ app.use("/api", decreaseinterviewcount);
 
 app.use("/api", getinterviewcount);
 
-app.listen(3000,()=>{
+app.listen(port,()=>{
     console.log("App is running on port 3000");
 });
