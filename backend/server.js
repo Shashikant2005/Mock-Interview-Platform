@@ -8,8 +8,16 @@ const saveUserAnswerRoute = require("./routes/userAnswerRoute")
 const getFeedbackRoute = require("./routes/getFeedbackRoute")
 const getInterviewHistoryRoute = require("./routes/getInterviewHistoryRoute")
 const uploadRoute = require('./routes/uploadInterviewRoute');
+const savemocVideoIndb = require('./routes/savemockVideoinDbRoutes');
+const getmockvideoforhistoryroute = require('./routes/getMockVideoForHistory');
+const videoRoute = require("./routes/videoAnalysisRoute");
+const paymentRoutes = require('./routes/paymentRoutes');
+const userRoutes = require("./routes/userRoutes");
+const decreaseinterviewcount = require('./routes/decreaseInterviewCountRoute');
+const getinterviewcount = require("./routes/getInterviewCountRoute")
 const cors = require("cors");
 const { dbConnect } = require("./config/db");
+const decreaseInterviewCount  = require("./controlers/decreaseInterviewCount ");
 
 app.use(cors({ origin: "http://localhost:5173" }));
 
@@ -31,6 +39,20 @@ app.use("/api",getFeedbackRoute)
 app.use("/api",getInterviewHistoryRoute)
 
 app.use('/api', uploadRoute);
+
+app.use('/api', savemocVideoIndb);
+
+app.use('/api', getmockvideoforhistoryroute);
+
+app.use("/api", videoRoute);
+
+app.use('/api', paymentRoutes);
+
+app.use("/api", userRoutes);
+
+app.use("/api", decreaseinterviewcount);
+
+app.use("/api", getinterviewcount);
 
 app.listen(3000,()=>{
     console.log("App is running on port 3000");

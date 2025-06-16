@@ -1,32 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
+import useJobStore from '../store';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from "axios"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function InterviewPage() {
   const [interviewData, setInterviewData] = useState(null);
   const [isOpenWebcam, setIsOpenWebcam] = useState(false);
-
+   const {interviewCompleted, setInterviewCompleted} = useJobStore();
+  const { jobPosition, setJobPosition, jobDescription, setJobDescription, jobExperience, setJobExperience } = useJobStore();
+  const { id } = useParams(); 
+  const navigate = useNavigate();
   useEffect(() => {
+    setInterviewCompleted(false)
     getInterviewDetails();
   }, []);
 
-  const getInterviewDetails = () => {
+  const getInterviewDetails = async () => {
     // Simulated mock interview data
-    const mockData = {
-      mockId: 'abc123',
-      jobPosition: 'Full Stack Developer',
-      jobDescription: 'MERN Stack, REST APIs, Deployment',
-      jobExperience: 2,
-    };
-    setInterviewData(mockData);
+    try {
+      const resp = await axios.get(`http://localhost:3000/api/interview/${id}`);
+
+      const data = resp.data;
+
+      // Parse jsonMockResp (it's stored as a stringified JSON array)
+      const parsedQuestions = JSON.parse(data.jsonMockResp);
+
+      // Set all required data into state
+      setInterviewData({
+        mockId: data._id,
+        jobPosition: data.jobPosition,
+        jobDescription: data.jobDescription,
+        jobExperience: data.jobExperience,
+        questions: parsedQuestions,
+      });
+
+    } catch (error) {
+      toast.error('Failed to fetch interview details please reload page',{position:'top-right'});
+      setErrorMessage('Unable to load interview details.'); // optional error handler
+    }
+
   };
 
   const handleStartInterview = () => {
-    alert('Interview Started!');
+    //alert('Interview Started!');
+    setInterviewCompleted(false);
     // Navigate or handle logic here
+    navigate(`/interview/${id}/startInterview`);
   };
 
   return (
-    <div style={{ padding: '30px' }}>
+    <div style={{ padding: '30px' }}> <ToastContainer/>
       <h2 style={{ fontWeight: 'bold', fontSize: '24px' }}>Let's Get Started</h2>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', marginTop: '30px' }}>
@@ -69,9 +95,9 @@ function InterviewPage() {
         </div>
       </div>
 
-      <div style={{ textAlign: 'right', marginTop: '30px' }}>
+     { interviewData && <div style={{ textAlign: 'right', marginTop: '30px' }}>
         <button style={styles.buttonPrimary} onClick={handleStartInterview}>Start Interview</button>
-      </div>
+      </div>}
     </div>
   );
 }

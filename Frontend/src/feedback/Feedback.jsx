@@ -1,35 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
-// Dummy data to simulate feedback fetched from DB
-const dummyFeedbackList = [
-  {
-    id: 1,
-    mockIdRef: '12345',
-    question: "Tell me about yourself.",
-    rating: 4,
-    UserAns: "I am a frontend developer with 3 years experience.",
-    correctAns: "A concise introduction highlighting skills and experience.",
-    feedback: "Try to be more specific about your achievements."
-  },
-  {
-    id: 2,
-    mockIdRef: '12345',
-    question: "What is your experience with React?",
-    rating: 5,
-    UserAns: "I have built multiple projects using React with hooks and context.",
-    correctAns: "Experience with React including hooks, context, and state management.",
-    feedback: "Good answer! Try mentioning performance optimization next time."
-  },
-  {
-    id: 3,
-    mockIdRef: '12345',
-    question: "How do you manage state in a large app?",
-    rating: 4,
-    UserAns: "Using Redux or Context API based on the requirement.",
-    correctAns: "State management using Redux, Context API, or other libraries.",
-    feedback: "Great! Also consider mentioning middleware and async actions."
-  }
-];
+import React, { useEffect, useId, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from "axios";
+import { useAuth } from '@clerk/clerk-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Simple Collapsible component (replace with your UI lib if needed)
 function Collapsible({ children }) {
@@ -48,21 +22,52 @@ function Collapsible({ children }) {
   );
 }
 
+
+//main component 
 function Feedback({ interviewId }) {
+   
   const [feedbackList, setFeedbackList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { id } = useParams();
+  const { userId, isLoaded } = useAuth();
+  const navigate = useNavigate()
 
   useEffect(() => {
-    // Simulate fetching filtered feedback by interviewId
-    const filtered = dummyFeedbackList.filter(item => item.mockIdRef === interviewId);
-    setFeedbackList(filtered);
-  }, [interviewId]);
+    if (isLoaded && userId && id) {
+      fetchFeedback();
+    }
+  }, [isLoaded, userId, id]);
+
+  const fetchFeedback = async () => {
+    setLoading(true);
+    setError("");
+    console.log("➡️ mockIdRef:", id);
+    console.log("➡️ userId:", userId);
+
+    try {
+      const response = await axios.get("http://localhost:3000/api/getfeedback", {
+        params: { mockIdRef: id, userId },
+      });
+
+      if (response.status === 200) {
+        setFeedbackList(response.data.answers);
+      }
+    } catch (err) {
+      toast.error(" Error fetching feedback", {position:'top-right'});
+      setError("Failed to load feedback. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Calculate total and average rating
-  const totalRating = feedbackList.reduce((sum, item) => sum + item.rating, 0);
-  const averageRating = feedbackList.length > 0 ? (totalRating / feedbackList.length).toFixed(1) : 0;
+  const totalRating = feedbackList.reduce((sum, item) => sum + Number(item.rating || 0), 0);
+  const averageRating = feedbackList.length > 0 ? (totalRating / feedbackList.length).toFixed(1) : "0.0";
+
 
   return (
-    <div className="p-10 max-w-4xl mx-auto">
+    <div className="p-10 max-w-4xl mx-auto"> <ToastContainer/>
       {feedbackList.length === 0 ? (
         <h2 className="font-bold text-xl text-gray-500">No feedback Record Found</h2>
       ) : (
@@ -94,12 +99,18 @@ function Feedback({ interviewId }) {
             </Collapsible>
           ))}
 
-          <a
-            href="/dashboard"
-            className="inline-block mt-6 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          <div
+            className="inline-block mt-6 px-5 py-2 cursor-pointer bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={()=>navigate("/")}
           >
             Go Home
-          </a>
+          </div>
+           <div
+            className="inline-block mx-3 mt-6 px-5 py-2 cursor-pointer bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={()=>navigate(`/interview/${id}/videofeedback`)}
+          >
+            video Feedback
+          </div>
         </>
       )}
     </div>

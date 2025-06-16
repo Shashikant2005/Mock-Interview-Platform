@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AddNewInterview from './AddNewInterview'
 import HistoryInterviewList from './HistoryInterviewList'
+import Card from './Card'
+import SeePreview from './SeePreview';
+import useJobStore from '../../store';
+import InterviewCountTooltip from './Tooltip';
 
 function Dashboard() {
+  const { setSeevideo, Seevideo, video, setVideo , interviewCompleted, setInterviewCompleted } = useJobStore();
+  
+  useEffect(()=>{
+     setInterviewCompleted(false);
+  },[])
   return (
     <div className='p-10'>
     <h2 className='font-bold text-2xl'> Dashboard</h2>
@@ -14,6 +23,10 @@ function Dashboard() {
     {/* previous interview list */}
 
     <HistoryInterviewList/>
+    {/*  */}
+   { video && <SeePreview/>}
+
+ 
 </div>
   )
 }

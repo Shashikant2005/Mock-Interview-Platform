@@ -17,7 +17,7 @@ exports.uploadVideo = async (req, res) => {
     });
 
     fs.unlinkSync(path); // delete local temp file
-     //console.log(result.secure_url)
+     console.log(result.secure_url)
     res.json({ message: 'Video uploaded!', url: result.secure_url });
   } catch (error) {
     //console.log(error)

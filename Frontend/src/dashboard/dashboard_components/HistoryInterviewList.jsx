@@ -1,50 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card'; // Make sure Card.js is in the same folder or adjust path
+import axios from 'axios';
+import { useAuth } from '@clerk/clerk-react'; // or your auth provider
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function HistoryInterviewList() {
   const [interviewList, setInterviewList] = useState([]);
-
+  const { userId } = useAuth();
+   const [loading, setLoading] = useState(true);
+   const navigate = useNavigate()
   useEffect(() => {
     // Simulate fetching data
     GetInterviewList();
   }, []);
 
-  function GetInterviewList() {
-    const dummyUserEmail = 'test@example.com';
+  const GetInterviewList = async () => {
+    if (!userId) return;
+    console.log(userId)
+    try {
+      const response = await axios.get('http://localhost:3000/api/interview-history', {
+        params: { userId },
+      });
 
-    // Simulated interview list data
-    const mockData = [
-      {
-        mockId: 'abc123',
-        jobPosition: 'Frontend Developer',
-        jobExperience: 2,
-        createdAt: '2025-05-26',
-        createdBy: dummyUserEmail,
-      },
-      {
-        mockId: 'def456',
-        jobPosition: 'Backend Developer',
-        jobExperience: 3,
-        createdAt: '2025-05-24',
-        createdBy: dummyUserEmail,
-      },
-    ];
+      if (response.data.success) {
+        setInterviewList(response.data.data);
+      } else {
+        toast.error('Failed to fetch interview history',{position:'top-right'});
+      }
+    } catch (error) {
+      toast.error('Error fetching interview history', {position:'top-right'});
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setInterviewList(mockData);
-  }
+   useEffect(() => {
+    GetInterviewList();
+  }, [userId]);
 
   function handleStart(id) {
-    console.log('Start interview:', id);
+    //console.log('Start interview:', id);
     // Navigate or perform logic here
+     navigate(`/interview/${id}`);
   }
 
   function handleFeedback(id) {
-    console.log('View feedback for:', id);
-    // Navigate or perform logic here
+    navigate(`/interview/${id}/feedback`)
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px' }}> <ToastContainer/>
       <h2 style={{ fontSize: '20px', fontWeight: '500' }}>Previous Mock Interviews</h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginTop: '20px' }}>

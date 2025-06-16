@@ -1,15 +1,19 @@
 import { LightbulbIcon, Volume2 } from 'lucide-react';
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Questionsection({ mockinterviewQuestion, activequestionindex }) {
 
+  //console.log("Interview Questions are" + mockinterviewQuestion)
   // ✅ Function to convert text to speech using browser's speechSynthesis API
+
   const textToSpeech = (text) => {
     if ('speechSynthesis' in window) {
       const speech = new SpeechSynthesisUtterance(text);
       window.speechSynthesis.speak(speech);
     } else {
-      alert("Your browser does not support this feature");
+      toast.warning("Your browser does not support this feature",{position:'top-right'});
     }
   };
 
@@ -23,9 +27,8 @@ function Questionsection({ mockinterviewQuestion, activequestionindex }) {
           mockinterviewQuestion.map((question, index) => (
             <h2
               key={index}
-              className={`p-2 border rounded-full text-xs md:text-sm text-center cursor-pointer ${
-                activequestionindex === index ? "bg-blue-600 text-white" : ""
-              }`}
+              className={`p-2 border rounded-full text-xs md:text-sm text-center cursor-pointer ${activequestionindex === index ? "bg-blue-600 text-white" : ""
+                }`}
             >
               Question #{index + 1}
             </h2>
@@ -50,11 +53,24 @@ function Questionsection({ mockinterviewQuestion, activequestionindex }) {
           <LightbulbIcon />
           <strong>Note:</strong>
         </h2>
-        <h2 className='text-sm text-primary my-2'>
+        {/* <h2 className='text-sm text-primary my-2'>
           To start your mock interview, click the <strong>"Enable Webcam"</strong> button.
           Allow access to your webcam when prompted by your browser. Once your webcam is active,
           you'll see your video feed. If you need to stop the webcam, just click the <strong>"Close Webcam"</strong> button.
-        </h2>
+        </h2> */}
+        <p className="text-sm text-red-700 bg-red-100 border border-red-300 rounded-md p-3 mt-4 max-w-md mx-auto">
+          <ol className="list-decimal list-inside space-y-1">
+            <li>
+              Once you <strong>end recording</strong>, the video is finalized. If you again click start a  recording without saving the previous one, it will be lost.
+            </li>
+            <li>
+              Only <strong>one video can be saved per interview</strong>. Please save carefully or Record new Video.
+            </li>
+            <li>
+              Start <strong> Answer Recording </strong> seprately and <strong> Start Video Recording </strong>  Seprately if Needed
+            </li>
+          </ol>
+        </p>
       </div>
 
     </div>

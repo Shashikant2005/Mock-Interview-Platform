@@ -1,26 +1,74 @@
 import React from 'react';
+import axios from "axios"
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
+import { useState } from 'react';
+import useJobStore from '../../store';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Card({ item, onStart, onFeedback, onAudioFeedback, onVideoFeedback }) {
+
+  const [loading, setLoading] = useState(false)
+  const { setSeevideo, Seevideo, video, setVideo } = useJobStore();
+  // const {id} = useParams();
+  const navigate = useNavigate()
+  const { userId } = useAuth();
+
+  const getVideo = async (id) => {
+
+    // console.log(userId)
+    // console.log(id)
+    try {
+      const result = await axios.get("http://localhost:3000/api/getvideos", {
+        params: { mockId: id, userId },
+      })
+
+      const videos = result?.data?.videos;
+      if (!videos || videos.length === 0) {
+        toast.warning("No videos found");
+        return;
+      }
+
+      // Set in store and safely access
+      setVideo(videos[0].videoUrl);
+      setSeevideo(true)
+      // console.log("Video URL:", videos[0].videoUrl); 
+    } catch (error) {
+      //console.log(error)
+      const message = error?.response?.data?.error || error.message || "Failed to fetch videos";
+      toast.error(`Error fetching video:`,{position:'top-right'});
+      //alert(message); // Or toast, etc.
+    }
+  }
+
+  const onSeeVideo = async (mockid) => {
+    await getVideo(mockid)
+  }
+
+
+
   return (
     <div style={styles.card}>
+      <ToastContainer/>
       <h2 style={styles.title}>{item?.jobPosition}</h2>
       <h4 style={styles.subtitle}>{item?.jobExperience} Years of Experience</h4>
       <p style={styles.date}>Created At: {item?.createdAt}</p>
 
       <div style={styles.buttonGroup}>
-        <button onClick={() => onFeedback(item?.mockId)} style={styles.buttonOutline}>
+        <button onClick={() => onFeedback(item?._id)} style={styles.buttonOutline}>
           Text Feedback
         </button>
 
-        <button onClick={() => onAudioFeedback(item?.mockId)} style={styles.buttonOutline}>
-          Audio Feedback
+        <button onClick={() => onSeeVideo(item?._id)} style={styles.buttonOutline}>
+          See Video
         </button>
 
-        <button onClick={() => onVideoFeedback(item?.mockId)} style={styles.buttonOutline}>
+        <button onClick={()=>navigate(`/interview/${item?._id}/videofeedback`)} style={styles.buttonOutline}>
           Video Feedback
         </button>
 
-        <button onClick={() => onStart(item?.mockId)} style={styles.buttonPrimary}>
+        <button onClick={() => onStart(item?._id)} style={styles.buttonPrimary}>
           Start
         </button>
       </div>

@@ -1,31 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import Questionsection from './startinterview_components/Questionsection';
 import Recoredanswer from './startinterview_components/Recoredanswer';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios"
+import useJobStore from '../store';
 
 function StartInterviewPage() {
   const [interviewData, setInterviewData] = useState(null);
   const [mockInterviewQuestions, setMockInterviewQuestions] = useState([]);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const { id } = useParams(); 
+  const navigate = useNavigate()
+
+  const {interviewCompleted, setInterviewCompleted} = useJobStore();
 
   useEffect(() => {
+    if(interviewCompleted==true){
+      navigate("/");
+    }
     getInterviewDetails(); // Simulate fetching data
   }, []);
+ 
+  
+  // const getInterviewDetails = () => {
+  //   // ✅ Replace with actual API call later
+  //   const mockData = {
+  //     jobPosition: "Frontend Developer",
+  //     mockId: "12345",
+  //     jsonMockResp: JSON.stringify([
+  //       { question: "Tell me about yourself." },
+  //       { question: "What is your experience with React?" },
+  //       { question: "How do you manage state in a large app?" }
+  //     ])
+  //   };
 
-  const getInterviewDetails = () => {
-    // ✅ Replace with actual API call later
-    const mockData = {
-      jobPosition: "Frontend Developer",
-      mockId: "12345",
-      jsonMockResp: JSON.stringify([
-        { question: "Tell me about yourself." },
-        { question: "What is your experience with React?" },
-        { question: "How do you manage state in a large app?" }
-      ])
-    };
+  //   const parsedQuestions = JSON.parse(mockData.jsonMockResp);
+  //   setInterviewData(mockData);
+  //   setMockInterviewQuestions(parsedQuestions);
+  // };
 
-    const parsedQuestions = JSON.parse(mockData.jsonMockResp);
-    setInterviewData(mockData);
-    setMockInterviewQuestions(parsedQuestions);
+  const getInterviewDetails = async () => {
+    // Simulated mock interview data
+    try {
+      const resp = await axios.get(`http://localhost:3000/api/interview/${id}`);
+
+      const data = resp.data;
+
+      // Parse jsonMockResp (it's stored as a stringified JSON array)
+      const parsedQuestions = JSON.parse(data.jsonMockResp);
+
+      // Set all required data into state
+      setInterviewData({
+        mockId: data._id,
+        jobPosition: data.jobPosition,
+        jobDescription: data.jobDescription,
+        jobExperience: data.jobExperience,
+        questions: parsedQuestions,
+      });
+      setMockInterviewQuestions(parsedQuestions)
+
+    } catch (error) {
+      toast.error('Failed to fetch interview details:', {position: "top-right"});
+      setErrorMessage('Unable to load interview details.'); // optional error handler
+    }
+
   };
 
   const nextQuestion = () => {
@@ -39,7 +79,9 @@ function StartInterviewPage() {
   };
 
   const endInterview = () => {
-    alert('Interview ended! Redirect to feedback page or save results.');
+     setInterviewCompleted(true)
+     toast.success('Interview ended! Redirect to feedback page or save results.', {position: "top-right"});
+    navigate(`/interview/${id}/feedback`)
   };
 
   // Dummy onSaveAnswer function for saving user answers
@@ -50,7 +92,7 @@ function StartInterviewPage() {
   };
 
   return (
-    <div className="p-5 max-w-6xl mx-auto">
+    <div className="p-5 max-w-6xl mx-auto"> <ToastContainer />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* 🧠 Question */}
         <Questionsection

@@ -14,14 +14,15 @@ function Header() {
     { name: 'Dashboard', path: '/' },
     { name: 'Questions', path: '/questions' },
     { name: 'Upgrade', path: '/upgrade' },
-    { name: 'How it Works?', path: '/how-it-works' },
+    // { name: 'How it Works?', path: '/how-it-works' },
+    { name: 'About Us', path: '/aboutus' },
   ];
 
   return (
     <div className='flex p-4 items-center justify-between bg-secondary shadow-sm relative'>
       {/* Logo */}
       <Link to="/" className="text-lg font-semibold">
-        CourseGen
+        PrepEdge
       </Link>
 
       {/* Desktop Nav */}

@@ -1,11 +1,11 @@
 import React from 'react'
 import Dashboard_Layout from './dashboard/Dashboard_Layout'
+import Pay from './payment_gateway/Pay'
 
 function App() {
-  return (
-    
+  return ( 
     <div>
-      <Dashboard_Layout/>
+      {/* <Dashboard_Layout/> */}
     </div>
   )
 }
