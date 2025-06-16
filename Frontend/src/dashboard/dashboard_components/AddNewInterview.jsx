@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function AddNewInterview() {
+  const url = import.meta.env.VITE_BACKEND_URL;
   const [Open, setOpen] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
   const { open } = useSignIn();
@@ -36,7 +37,7 @@ function AddNewInterview() {
       // cheack interview limit
 
       try {
-        const res = await axios.get(`http://localhost:3000/api/interview-count/${userId}`);
+        const res = await axios.get(`${url}/api/interview-count/${userId}`);
         const count = res.data.interviewCount;
 
         if (count === 0) {
@@ -118,7 +119,7 @@ Please ensure the JSON is valid, compact, and structured as shown. Do not includ
       // Simulate API call
 
       console.log(prompt)
-      const callGemini = await axios.post('http://localhost:3000/api/generate', { prompt: prompt }, { signal: abortControllerRef.current.signal });
+      const callGemini = await axios.post(`${url}/api/generate`, { prompt: prompt }, { signal: abortControllerRef.current.signal });
       const mockQuesAnswers = callGemini.data.response.replace(/```json|```/g, '').trim();
       const parsedData = JSON.parse(mockQuesAnswers);
       //console.log(parsedData);
@@ -135,14 +136,14 @@ Please ensure the JSON is valid, compact, and structured as shown. Do not includ
           userUniqClearkId: userId,
         };
         try {
-          const response = await axios.post('http://localhost:3000/api/mock-interview', mockData);
+          const response = await axios.post(`${url}/api/mock-interview`, mockData);
           //console.log('Saved:', response.data);
           const mockId = response.data.data._id;
 
           //decrease count
           if (response?.data?.data) {
             try {
-              await axios.post('http://localhost:3000/api/decrease-count', {
+              await axios.post(`${url}/api/decrease-count`, {
                 clerkUserId: userId
               });
             } catch (error) {

@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function HistoryInterviewList() {
+  const url = import.meta.env.VITE_BACKEND_URL;
   const [interviewList, setInterviewList] = useState([]);
   const { userId } = useAuth();
    const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ function HistoryInterviewList() {
     if (!userId) return;
     console.log(userId)
     try {
-      const response = await axios.get('http://localhost:3000/api/interview-history', {
+      const response = await axios.get(`${url}/api/interview-history`, {
         params: { userId },
       });
 

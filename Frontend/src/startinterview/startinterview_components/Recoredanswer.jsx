@@ -23,6 +23,7 @@ function Recoredanswer({
   onSaveAnswer,
   setresults
 }) {
+  const url = import.meta.env.VITE_BACKEND_URL;
   const [userAnswer, setuserAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const lastResultRef = useRef('');
@@ -109,7 +110,7 @@ Output format (example):
 
 Ensure the output is always valid JSON and uses clear, interview-appropriate language.
   `;
-    const callGemini = await axios.post('http://localhost:3000/api/generate', { prompt: feedbackPrompt });
+    const callGemini = await axios.post(`${url}/api/generate`, { prompt: feedbackPrompt });
     const mockQuesAnswers = callGemini.data.response.replace(/```json|```/g, '').trim();
     const parsedData = JSON.parse(mockQuesAnswers);
     return parsedData
@@ -142,7 +143,7 @@ Ensure the output is always valid JSON and uses clear, interview-appropriate lan
     //console.log(data)
     //save ans in db if not already saved
     try {
-      const response = await axios.post("http://localhost:3000/api/saveUserOneQueAnswer", data);
+      const response = await axios.post(`${url}/api/saveUserOneQueAnswer`, data);
 
       if (response.status === 201) {
         toast.success("Answer saved successfully!", { position: "top-right" });

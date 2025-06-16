@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Audio, InfinitySpin, ThreeDots } from 'react-loader-spinner'
 
 const RecordInterview = () => {
-
+    const url = import.meta.env.VITE_BACKEND_URL;
     const webcamRef = useRef(null);
     const mediaRecorderRef = useRef(null);
     const [recording, setRecording] = useState(false);
@@ -58,7 +58,7 @@ const RecordInterview = () => {
 
         try {
             const response = await axios.post(
-                'http://localhost:3000/api/upload',
+                `${url}/api/upload`,
                 formData,
                 {
                     headers: {
@@ -78,7 +78,7 @@ const RecordInterview = () => {
 
             // Step 2: Save video URL to your backend
             try {
-                const res = await axios.post('http://localhost:3000/api/saveinDb', {
+                const res = await axios.post(`${url}/api/saveinDb`, {
                     videoUrl,
                     userId,
                     mockId: id,

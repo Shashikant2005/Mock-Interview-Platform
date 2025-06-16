@@ -7,6 +7,7 @@ import axios from "axios"
 import InterviewCountTooltip from './dashboard_components/Tooltip';
 function Dashboard_Layout() {
   // hit user creation after user login
+  const url = import.meta.env.VITE_BACKEND_URL;
   console.log("hitted")
   const { isSignedIn, userId } = useAuth();
 
@@ -14,7 +15,7 @@ function Dashboard_Layout() {
     const createUser = async () => {
       if (isSignedIn && userId) {
         try {
-          await axios.post("http://localhost:3000/api/create-user", {
+          await axios.post(`${url}/api/create-user`, {
             clerkUserId: userId,
           });
          // console.log("✅ User created or already exists");

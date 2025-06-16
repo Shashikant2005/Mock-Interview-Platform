@@ -19,6 +19,7 @@ const CardTitle = ({ children }) => (
 );
 
 const InterviewAnalysis = () => {
+ const uri = import.meta.env.VITE_BACKEND_URL;
   const hasFetched = useRef(false); // 🔐 control repeat calls
   const { userId } = useAuth()
   const { id } = useParams();
@@ -34,7 +35,7 @@ const InterviewAnalysis = () => {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:3000/api/getvideos", {
+      const response = await axios.get(`${uri}/api/getvideos`, {
         params: { mockId: id, userId },
       });
 

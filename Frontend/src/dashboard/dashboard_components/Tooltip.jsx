@@ -7,11 +7,12 @@ import 'react-toastify/dist/ReactToastify.css';
 const InterviewCountTooltip = () => {
   const [count, setCount] = useState(null);
   const {userId} = useAuth();
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/interview-count/${userId}`);
+        const res = await axios.get(`${url}/api/interview-count/${userId}`);
         setCount(res.data.interviewCount);
       } catch (error) {
         //toast.error('Failed to fetch interview count',{position:"top-right"});

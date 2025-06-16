@@ -7,8 +7,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Audio , InfinitySpin } from 'react-loader-spinner'
 function Pay() {
-
-  const razorpayKey = import.meta.env.VITE_CLERK_KEY_ID;
+  const url = import.meta.env.VITE_BACKEND_URL;
+  const razorpayKey = import.meta.env.VITE_KEY_ID;
   const navigate = useNavigate()
   const [isloading, SetisLoading] = useState(false)
   const { userId, isSignedIn } = useAuth();
@@ -18,7 +18,7 @@ function Pay() {
       toast.warning("User not signed in.");
       return;
     }
-    const order = await axios.post('http://localhost:3000/api/create-order');
+    const order = await axios.post(`${url}/api/create-order`);
 
     const options = {
       key: razorpayKey, // Replace with your test key
@@ -31,13 +31,13 @@ function Pay() {
         const orderId = response.razorpay_order_id;
 
         try {
-          const res = await axios.get(`http://localhost:3000/api/payment/${paymentId}`);
+          const res = await axios.get(`${url}/api/payment/${paymentId}`);
           const payment = res.data;
 
           if (payment.status === 'authorized') {
             SetisLoading(true)
             //change user status
-            await axios.post('http://localhost:3000/api/mark-paid', {
+            await axios.post(`${url}/api/mark-paid`, {
               clerkUserId: userId,
               orderId,
               paymentId,

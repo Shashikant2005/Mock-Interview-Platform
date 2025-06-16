@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Card({ item, onStart, onFeedback, onAudioFeedback, onVideoFeedback }) {
-
+   const url = import.meta.env.VITE_BACKEND_URL;
   const [loading, setLoading] = useState(false)
   const { setSeevideo, Seevideo, video, setVideo } = useJobStore();
   // const {id} = useParams();
@@ -20,7 +20,7 @@ function Card({ item, onStart, onFeedback, onAudioFeedback, onVideoFeedback }) {
     // console.log(userId)
     // console.log(id)
     try {
-      const result = await axios.get("http://localhost:3000/api/getvideos", {
+      const result = await axios.get(`${url}/api/getvideos`, {
         params: { mockId: id, userId },
       })
 

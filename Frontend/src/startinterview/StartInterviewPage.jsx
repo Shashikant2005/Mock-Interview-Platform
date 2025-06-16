@@ -8,6 +8,7 @@ import axios from "axios"
 import useJobStore from '../store';
 
 function StartInterviewPage() {
+  const url = import.meta.env.VITE_BACKEND_URL;
   const [interviewData, setInterviewData] = useState(null);
   const [mockInterviewQuestions, setMockInterviewQuestions] = useState([]);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
@@ -44,7 +45,7 @@ function StartInterviewPage() {
   const getInterviewDetails = async () => {
     // Simulated mock interview data
     try {
-      const resp = await axios.get(`http://localhost:3000/api/interview/${id}`);
+      const resp = await axios.get(`${url}/api/interview/${id}`);
 
       const data = resp.data;
 

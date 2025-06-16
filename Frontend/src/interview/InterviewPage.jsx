@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function InterviewPage() {
+  const url = import.meta.env.VITE_BACKEND_URL;
   const [interviewData, setInterviewData] = useState(null);
   const [isOpenWebcam, setIsOpenWebcam] = useState(false);
    const {interviewCompleted, setInterviewCompleted} = useJobStore();
@@ -21,7 +22,7 @@ function InterviewPage() {
   const getInterviewDetails = async () => {
     // Simulated mock interview data
     try {
-      const resp = await axios.get(`http://localhost:3000/api/interview/${id}`);
+      const resp = await axios.get(`${url}/api/interview/${id}`);
 
       const data = resp.data;
 

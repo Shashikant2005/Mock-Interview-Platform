@@ -25,7 +25,7 @@ function Collapsible({ children }) {
 
 //main component 
 function Feedback({ interviewId }) {
-   
+   const url = import.meta.env.VITE_BACKEND_URL;
   const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,7 +46,7 @@ function Feedback({ interviewId }) {
     console.log("➡️ userId:", userId);
 
     try {
-      const response = await axios.get("http://localhost:3000/api/getfeedback", {
+      const response = await axios.get(`${url}/api/getfeedback`, {
         params: { mockIdRef: id, userId },
       });
 
