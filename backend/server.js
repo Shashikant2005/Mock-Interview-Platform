@@ -18,9 +18,9 @@ const getinterviewcount = require("./routes/getInterviewCountRoute")
 const cors = require("cors");
 require("dotenv").config();
 const { dbConnect } = require("./config/db");
-const decreaseInterviewCount  = require("./controlers/decreaseInterviewCount ");
 
-app.use(cors({ origin: "http://localhost:5173" }));
+
+app.use(cors());
 
 const port = process.env.PORT || 3000;
 app.use(express.json());
