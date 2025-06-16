@@ -14,7 +14,7 @@ const InterviewCountTooltip = () => {
         const res = await axios.get(`http://localhost:3000/api/interview-count/${userId}`);
         setCount(res.data.interviewCount);
       } catch (error) {
-        toast.error('Failed to fetch interview count',{position:"top-right"});
+        //toast.error('Failed to fetch interview count',{position:"top-right"});
         setCount('N/A');
       }
     };
