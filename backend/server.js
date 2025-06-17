@@ -16,16 +16,19 @@ const userRoutes = require("./routes/userRoutes");
 const decreaseinterviewcount = require('./routes/decreaseInterviewCountRoute');
 const getinterviewcount = require("./routes/getInterviewCountRoute")
 const cors = require("cors");
+const path = require('path');
 require("dotenv").config();
 const { dbConnect } = require("./config/db");
 
-
-app.use(cors());
+app.use(cors({origin: 'https://prepedge.netlify.app'}));
 
 const port = process.env.PORT || 3000;
 app.use(express.json());
 // connect Db
  dbConnect();
+
+
+ 
 // Route middleware
 app.use("/api", geminiRoutes);
 
@@ -54,6 +57,16 @@ app.use("/api", userRoutes);
 app.use("/api", decreaseinterviewcount);
 
 app.use("/api", getinterviewcount);
+  
+// serve frontend to backend;
+//app.use(express.static(path.join(__dirname, 'dist')));
+
+
+// const FRONTEND_ROUTES = /^\/(?!api).*/;
+
+// app.get(FRONTEND_ROUTES, (req, res) => {
+//   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// });
 
 app.listen(port,()=>{
     console.log("App is running on port 3000");
