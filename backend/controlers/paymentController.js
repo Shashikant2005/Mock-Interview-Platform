@@ -50,7 +50,7 @@ exports.markPaid = async (req, res) => {
       { clerkUserId },
       {
         isPaid: true,
-        interviewCount: 50,
+        interviewCount: 20,
         lastOrderId: orderId,
         lastPaymentId: paymentId,
       },
